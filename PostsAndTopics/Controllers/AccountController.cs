@@ -12,10 +12,12 @@ using System.Text;
 using PostsAndTopics.Dto;
 using PostsAndTopics.Services.Repositories;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace PostsAndTopics.Controllers
 {
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
     public class AccountController : Controller
     {
         private IConfiguration _config;
@@ -42,94 +44,27 @@ namespace PostsAndTopics.Controllers
 
                 if (currentUser == null)
                     return response;
-                else
-                {
-                    var tokenStr = GenerateJSONWebToken(currentUser);
-                    response = Ok(new { token = tokenStr });
-                }
-                return response;
-            }
 
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, dto.userName)
+                };
+                var identity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+                var props = new AuthenticationProperties();
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, props).Wait();
+
+                return RedirectToAction("Index", "Users");
+            }
             return View(dto);
         }
 
-        //[HttpPost]
-        //public IActionResult Login(LoginDto dto)
-        //{
-        //    IActionResult response = Unauthorized();
-
-        //    //var user = AuthenticateUser(dto);
-        //    var currentUser = _repoWrapper.User.FindByCondition(u => u.UserName == dto.userName && u.Password==dto.password).FirstOrDefault();
-
-        //    if (currentUser == null)
-        //        return response;
-        //    else
-        //    {
-        //        var tokenStr = GenerateJSONWebToken(currentUser);
-        //        response = Ok(new { token = tokenStr });
-        //    }
-
-        //    //if (user != null)
-        //    //{
-        //    //    var tokenStr = GenerateJSONWebToken(user);
-        //    //    response = Ok(new { token = tokenStr });
-        //    //}
-
-
-        //    return response;
-        //}
-
-        private User AuthenticateUser(LoginDto login)
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
         {
-            User user = null;
-            if(login.userName =="name" && login.password == "123")
-            {
-                user = new User { UserName = "Name", Password = "123" };
-            }
-            return user;
-
-        }
-
-        private string GenerateJSONWebToken(User user)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                //new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Issuer"],
-                claims,
-                expires: DateTime.Now.AddMinutes(120),
-                signingCredentials: credentials);
-
-            var encodetoken = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return encodetoken;
-        }
-
-        [Authorize]
-        [HttpPost("Post")]
-        public string Post()
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            IList<Claim> claim = identity.Claims.ToList();
-            var userName = claim[0].Value;
-
-            return "Welcome " + userName;
-        }
-
-        [Authorize]
-        [HttpGet("GetValue")]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "Value1", "Value2" };
-        }
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index");
+        }`
     }
 }
