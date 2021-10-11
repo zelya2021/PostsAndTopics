@@ -1,4 +1,5 @@
 ﻿using PostsAndTopics.Models;
+using System.Collections.Generic;
 
 namespace PostsAndTopics.Services.Repositories
 {

@@ -1,0 +1,26 @@
+﻿@using PostsAndTopics.Models
+@model List<Post>
+
+<div class="topics">
+    <div class="topic thumbnail">
+        <div class="caption" style="text-align:center">
+            <h3>@ViewBag.TopicName</h3>
+        </div>
+    </div>
+</div>
+
+@foreach (var post in Model)
+{
+    <div class="card" style="width: 38rem;">
+        <div class="card-body">
+            <h5 class="card-title">@post.Thought</h5>
+            <p class="card-text"></p>
+            @if (post.UserId == @ViewBag.UserId)
+            {
+                @Html.ActionLink("Delete", "DeletePost", "Posts", new { id = post.Id }, new { @class = "btn btn-success" });
+                @Html.ActionLink("Edit", "EditPost", "Posts", new { id = post.Id }, new { @class = "btn btn-success" });
+            }
+        </div>
+    </div>
+}
+@Html.ActionLink("Create post", "CreatePost", "Posts", new { topicName = @ViewBag.TopicName })

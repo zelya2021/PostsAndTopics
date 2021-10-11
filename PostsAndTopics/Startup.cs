@@ -29,6 +29,7 @@ namespace PostsAndTopics
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.ConfigureRepositoryWrapper();
+            services.ConfigureServices();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

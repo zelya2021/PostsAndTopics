@@ -1,0 +1,20 @@
+﻿@using PostsAndTopics.Models
+@model List<Post>
+
+<div class="topics">
+    <div class="topic thumbnail">
+        <div class="caption" style="text-align:center">
+            <h3>@ViewBag.TopicName</h3>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="width: 38rem;">
+    @foreach (var post in Model)
+    {
+        @Html.Partial("_ShowPostsPartialView", post)
+    }
+</div>
+
+
+@Html.ActionLink("Create post", "CreatePost")

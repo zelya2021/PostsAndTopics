@@ -23,15 +23,18 @@ namespace PostsAndTopics.Services.Repositories
         }
         public void Create(T entity)
         {
-            this._databaseContext.Set<T>().Add(entity);
+            _databaseContext.Set<T>().Add(entity);
+            _databaseContext.SaveChanges();
         }
         public void Update(T entity)
         {
             this._databaseContext.Set<T>().Update(entity);
+            _databaseContext.SaveChanges();
         }
         public void Delete(T entity)
         {
             this._databaseContext.Set<T>().Remove(entity);
+            _databaseContext.SaveChanges();
         }
     }
 }

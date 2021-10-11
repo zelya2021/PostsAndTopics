@@ -69,3 +69,40 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/*Custom*/
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.topics {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.topic {
+    margin: 1%;
+    border: 5px;
+}
+
+.topic img, inputFile {
+    width: 100px;
+    height: 100px;
+ }
+
+#img-preview {
+    width: 100px;
+    margin-left: 30%;
+}
+
+#loading img {
+    width: 100px;
+}
+
+#loading {
+    display: none;
+}
+

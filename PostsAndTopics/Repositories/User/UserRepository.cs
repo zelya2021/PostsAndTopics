@@ -1,5 +1,9 @@
-﻿using PostsAndTopics.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PostsAndTopics.Models;
 using PostsAndTopics.Models.Database;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PostsAndTopics.Services.Repositories
 {
